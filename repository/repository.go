@@ -20,12 +20,14 @@ func New(ctx context.Context, dbUri string) (*Repository, error) {
 	if err != nil {
 		log.Println("problem")
 	}
+
 	//ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	err = client.Connect(ctx)
 	if err != nil {
 		log.Println("ctx problem")
 	}
 	defer client.Disconnect(ctx)
+
 	err = client.Ping(ctx, readpref.Primary())
 	if err != nil {
 		log.Print(err)
@@ -35,6 +37,7 @@ func New(ctx context.Context, dbUri string) (*Repository, error) {
 		log.Print(err)
 	}
 	fmt.Println(databases)
+
 	return &Repository{
 		db: client,
 	}, nil
