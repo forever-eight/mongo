@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 
+	"github.com/forever-eight/mongo.git/ds"
 	"github.com/forever-eight/mongo.git/repository"
 )
 
@@ -15,9 +16,19 @@ func main() {
 	ctx := context.Background()
 
 	// Инициализация репозитория
-	_, err := repository.New(ctx, dbUri)
+	rep, err := repository.New(ctx, dbUri)
 	if err != nil {
 		log.Fatal("Can't init repository:", err)
+	}
+	project := ds.Projects{
+		Title: "MAI",
+		Channels: ds.Channels{
+			Vk: []ds.VkConfig{ds.VkConfig{Token: "12345"}, ds.VkConfig{Token: "6555"}},
+		},
+	}
+	err = rep.AddProject(ctx, &project)
+	if err != nil {
+		log.Println("Add error", err)
 	}
 	//ctx = repository.CreateContext(ctx, repos)
 }

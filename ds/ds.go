@@ -12,11 +12,11 @@ type Channels struct {
 }
 
 type VkConfig struct {
-	TokenVk string `bson:"token_vk"` // Токен для ВК
+	Token string `bson:"token"` // Токен для ВК
 }
 
 type TgConfig struct {
-	TokenTg string `bson:"token_tg"` // Токен для ТГ
+	Token string `bson:"token"` // Токен для ТГ
 }
 
 type JivoConfig struct {
