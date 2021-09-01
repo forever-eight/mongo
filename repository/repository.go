@@ -50,6 +50,7 @@ func New(ctx context.Context, dbUri string) (*Repository, error) {
 	}, nil
 }
 
+// Добавляет проект
 func (r *Repository) AddProject(ctx context.Context, project *ds.Projects) error {
 	col := r.db.Database(database).Collection(projectsCollection)
 
@@ -63,4 +64,21 @@ func (r *Repository) AddProject(ctx context.Context, project *ds.Projects) error
 	}
 
 	return nil
+}
+
+// Находит проект по названию
+func (r *Repository) FindProject(ctx context.Context, project string) ([]*ds.Projects, error) {
+	col := r.db.Database(database).Collection(projectsCollection)
+	cursor, err := col.Find(ctx, bson.D{{"title", project}})
+	if err != nil {
+		return nil, err
+	}
+
+	var results []*ds.Projects
+	err = cursor.All(ctx, &results)
+	if err != nil {
+		return nil, err
+	}
+
+	return results, nil
 }

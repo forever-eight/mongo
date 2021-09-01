@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	"github.com/forever-eight/mongo.git/ds"
@@ -21,7 +22,7 @@ func main() {
 		log.Fatal("Can't init repository:", err)
 	}
 	project := ds.Projects{
-		Title: "MAI",
+		Title: "МАИ",
 		Channels: ds.Channels{
 			Vk: []ds.VkConfig{ds.VkConfig{Token: "12345"}, ds.VkConfig{Token: "6555"}},
 		},
@@ -30,5 +31,13 @@ func main() {
 	if err != nil {
 		log.Println("Add error", err)
 	}
-	//ctx = repository.CreateContext(ctx, repos)
+
+	res, err := rep.FindProject(ctx, "МТУСИ")
+	if err != nil {
+		log.Println("Find error", err)
+	}
+
+	for n := 0; n < len(res); n++ {
+		fmt.Println(res[n])
+	}
 }
