@@ -32,7 +32,7 @@ func main() {
 		log.Println("Add error", err)
 	}
 
-	res, err := rep.FindProject(ctx, "МТУСИ")
+	res, err := rep.FindProjectByID(ctx, "МТУСИ")
 	if err != nil {
 		log.Println("Find error", err)
 	}

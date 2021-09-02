@@ -67,7 +67,7 @@ func (r *Repository) AddProject(ctx context.Context, project *ds.Projects) error
 }
 
 // Находит проект по названию
-func (r *Repository) FindProject(ctx context.Context, project string) ([]*ds.Projects, error) {
+func (r *Repository) FindProjectByTitle(ctx context.Context, project string) ([]*ds.Projects, error) {
 	col := r.db.Database(database).Collection(projectsCollection)
 	cursor, err := col.Find(ctx, bson.D{{"title", project}})
 	if err != nil {
@@ -81,4 +81,32 @@ func (r *Repository) FindProject(ctx context.Context, project string) ([]*ds.Pro
 	}
 
 	return results, nil
+}
+
+// Находит проект по id
+func (r *Repository) FindProjectByID(ctx context.Context, ID string) ([]*ds.Projects, error) {
+	col := r.db.Database(database).Collection(projectsCollection)
+	cursor, err := col.Find(ctx, bson.D{{"_id", ID}})
+	if err != nil {
+		return nil, err
+	}
+
+	var results []*ds.Projects
+	err = cursor.All(ctx, &results)
+	if err != nil {
+		return nil, err
+	}
+
+	return results, nil
+}
+
+// Удаляет проект
+func (r *Repository) DeleteProject(ctx context.Context, ID string) error {
+	col := r.db.Database(database).Collection(projectsCollection)
+	_, err := col.DeleteOne(ctx, bson.D{{"_id", ID}})
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
