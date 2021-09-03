@@ -2,10 +2,10 @@ package repository
 
 import (
 	"context"
-	"fmt"
 	"log"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
@@ -39,11 +39,6 @@ func New(ctx context.Context, dbUri string) (*Repository, error) {
 	if err != nil {
 		log.Print(err)
 	}
-	databases, err := client.ListDatabaseNames(ctx, bson.M{})
-	if err != nil {
-		log.Print(err)
-	}
-	fmt.Println(databases)
 
 	return &Repository{
 		db: client,
@@ -51,7 +46,7 @@ func New(ctx context.Context, dbUri string) (*Repository, error) {
 }
 
 // Добавляет проект
-func (r *Repository) AddProject(ctx context.Context, project *ds.Projects) error {
+func (r *Repository) AddProject(ctx context.Context, project *ds.Project) error {
 	col := r.db.Database(database).Collection(projectsCollection)
 
 	bookDoc, err := bson.Marshal(project)
@@ -67,14 +62,14 @@ func (r *Repository) AddProject(ctx context.Context, project *ds.Projects) error
 }
 
 // Находит проект по названию
-func (r *Repository) FindProjectByTitle(ctx context.Context, project string) ([]*ds.Projects, error) {
+func (r *Repository) FindProjectByTitle(ctx context.Context, project string) ([]*ds.Project, error) {
 	col := r.db.Database(database).Collection(projectsCollection)
 	cursor, err := col.Find(ctx, bson.D{{"title", project}})
 	if err != nil {
 		return nil, err
 	}
 
-	var results []*ds.Projects
+	var results []*ds.Project
 	err = cursor.All(ctx, &results)
 	if err != nil {
 		return nil, err
@@ -84,20 +79,25 @@ func (r *Repository) FindProjectByTitle(ctx context.Context, project string) ([]
 }
 
 // Находит проект по id
-func (r *Repository) FindProjectByID(ctx context.Context, ID string) ([]*ds.Projects, error) {
+func (r *Repository) FindProjectByID(ctx context.Context, ID string) (*ds.Project, error) {
 	col := r.db.Database(database).Collection(projectsCollection)
-	cursor, err := col.Find(ctx, bson.D{{"_id", ID}})
+
+	oID, err := primitive.ObjectIDFromHex(ID)
 	if err != nil {
 		return nil, err
 	}
 
-	var results []*ds.Projects
-	err = cursor.All(ctx, &results)
+	got := col.FindOne(ctx, bson.D{{"_id", oID}})
+	if got.Err() != nil {
+		return nil, got.Err()
+	}
+	var doc *ds.Project
+	err = got.Decode(&doc)
 	if err != nil {
 		return nil, err
 	}
 
-	return results, nil
+	return doc, nil
 }
 
 // Удаляет проект

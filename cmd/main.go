@@ -2,10 +2,10 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 
-	"github.com/forever-eight/mongo.git/ds"
 	"github.com/forever-eight/mongo.git/repository"
 )
 
@@ -21,23 +21,27 @@ func main() {
 	if err != nil {
 		log.Fatal("Can't init repository:", err)
 	}
-	project := ds.Projects{
-		Title: "МАИ",
-		Channels: ds.Channels{
-			Vk: []ds.VkConfig{ds.VkConfig{Token: "12345"}, ds.VkConfig{Token: "6555"}},
-		},
-	}
-	err = rep.AddProject(ctx, &project)
+	/*	project := ds.Projects{
+			Title: "МАИ",
+			Channels: ds.Channels{
+				Vk: []ds.VkConfig{ds.VkConfig{Token: "12345"}, ds.VkConfig{Token: "6555"}},
+			},
+		}
+		err = rep.AddProject(ctx, &project)
+		if err != nil {
+			log.Println("Add error", err)
+		}*/
+
+	found, err := rep.FindProjectByID(ctx, "612e7947290806db4c6490f6")
 	if err != nil {
-		log.Println("Add error", err)
+		log.Println("find error", err)
 	}
 
-	res, err := rep.FindProjectByID(ctx, "МТУСИ")
+	foundJSON, err := json.MarshalIndent(found, "", "\t")
 	if err != nil {
-		log.Println("Find error", err)
+		log.Println("json error", err)
 	}
 
-	for n := 0; n < len(res); n++ {
-		fmt.Println(res[n])
-	}
+	fmt.Print(string(foundJSON))
+
 }

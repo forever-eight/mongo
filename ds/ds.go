@@ -1,6 +1,7 @@
 package ds
 
-type Projects struct {
+type Project struct {
+	ID       string   `bson:"_id"`
 	Title    string   `bson:"title"`
 	Channels Channels `bson:"channels"`
 }
