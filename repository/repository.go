@@ -28,12 +28,10 @@ func New(ctx context.Context, dbUri string) (*Repository, error) {
 		log.Println("problem")
 	}
 
-	//ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	err = client.Connect(ctx)
 	if err != nil {
 		log.Println("ctx problem")
 	}
-	//defer client.Disconnect(ctx)
 
 	err = client.Ping(ctx, readpref.Primary())
 	if err != nil {
@@ -100,10 +98,32 @@ func (r *Repository) FindProjectByID(ctx context.Context, ID string) (*ds.Projec
 	return doc, nil
 }
 
+// Изменяет проект
+func (r *Repository) RemakeProject(ctx context.Context, ID string, project *ds.Project) (*ds.Project, error) {
+	col := r.db.Database(database).Collection(projectsCollection)
+	oID, err := primitive.ObjectIDFromHex(ID)
+	if err != nil {
+		return nil, err
+	}
+	got := col.FindOneAndUpdate(ctx, bson.M{"_id": oID}, bson.M{"$set": project})
+	var doc *ds.Project
+	err = got.Decode(&doc)
+	if err != nil {
+		return nil, err
+	}
+
+	return doc, nil
+
+}
+
 // Удаляет проект
 func (r *Repository) DeleteProject(ctx context.Context, ID string) error {
 	col := r.db.Database(database).Collection(projectsCollection)
-	_, err := col.DeleteOne(ctx, bson.D{{"_id", ID}})
+	oID, err := primitive.ObjectIDFromHex(ID)
+	if err != nil {
+		return err
+	}
+	_, err = col.DeleteOne(ctx, bson.D{{"_id", oID}})
 	if err != nil {
 		return err
 	}

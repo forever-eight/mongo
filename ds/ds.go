@@ -1,9 +1,11 @@
 package ds
 
+import "go.mongodb.org/mongo-driver/bson/primitive"
+
 type Project struct {
-	ID       string   `bson:"_id"`
-	Title    string   `bson:"title"`
-	Channels Channels `bson:"channels"`
+	ID       primitive.ObjectID `bson:"_id"`
+	Title    string             `bson:"title"`
+	Channels Channels           `bson:"channels"`
 }
 
 type Channels struct {
