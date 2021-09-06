@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -99,20 +100,22 @@ func (r *Repository) FindProjectByID(ctx context.Context, ID string) (*ds.Projec
 }
 
 // Изменяет проект
-func (r *Repository) RemakeProject(ctx context.Context, ID string, project *ds.Project) (*ds.Project, error) {
+func (r *Repository) ChangeProject(ctx context.Context, ID string, project *ds.Project) error {
 	col := r.db.Database(database).Collection(projectsCollection)
 	oID, err := primitive.ObjectIDFromHex(ID)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	got := col.FindOneAndUpdate(ctx, bson.M{"_id": oID}, bson.M{"$set": project})
-	var doc *ds.Project
-	err = got.Decode(&doc)
+	rID := bson.M{"_id": oID}
+
+	upd := bson.D{{Key: "$set", Value: bson.M{"title": project.Title}}}
+	fmt.Println(upd)
+	_, err = col.UpdateOne(ctx, rID, upd)
 	if err != nil {
-		return nil, err
+		log.Fatal("Error on updating one Hero", err)
 	}
 
-	return doc, nil
+	return nil
 
 }
 

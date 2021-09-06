@@ -2,8 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
 	"log"
 
 	"github.com/forever-eight/mongo.git/ds"
@@ -60,22 +58,17 @@ func main() {
 
 	// Изменение проекта
 	project := ds.Project{
-		Title: "Мария",
+		Title: "Машенька",
 		Channels: ds.Channels{
-			Vk: []ds.VkConfig{ds.VkConfig{Token: "213"}, ds.VkConfig{Token: "ьувтвтв111"}},
+			Vk: []ds.VkConfig{ds.VkConfig{Token: "213"}, ds.VkConfig{Token: "55555"}},
 			Tg: []ds.TgConfig{ds.TgConfig{Token: "1234"}},
 		},
 	}
 
-	changed, err := rep.RemakeProject(ctx, "613271e6aaadd5d13e525940", &project)
+	err = rep.ChangeProject(ctx, "613271e6aaadd5d13e525940", &project)
 
 	if err != nil {
 		log.Println("change error", err)
 	}
 
-	changedJSON, err := json.MarshalIndent(changed, "", "\t")
-	if err != nil {
-		log.Println("json error", err)
-	}
-	fmt.Print(string(changedJSON))
 }
