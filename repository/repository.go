@@ -108,7 +108,7 @@ func (r *Repository) ChangeProject(ctx context.Context, ID string, project *ds.P
 	}
 	rID := bson.M{"_id": oID}
 
-	upd := bson.D{{Key: "$set", Value: bson.M{"title": project.Title}}}
+	upd := bson.D{{Key: "$set", Value: bson.M{"title": project.Title, "channels": project.Channels}}}
 	fmt.Println(upd)
 	_, err = col.UpdateOne(ctx, rID, upd)
 	if err != nil {
