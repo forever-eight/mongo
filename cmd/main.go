@@ -4,8 +4,10 @@ import (
 	"context"
 	"log"
 
-	"github.com/forever-eight/mongo.git/ds"
+	"github.com/forever-eight/mongo.git"
+	"github.com/forever-eight/mongo.git/endpoint"
 	"github.com/forever-eight/mongo.git/repository"
+	"github.com/forever-eight/mongo.git/service"
 )
 
 const (
@@ -15,25 +17,19 @@ const (
 func main() {
 	ctx := context.Background()
 
-	// Инициализация репозитория
-	rep, err := repository.New(ctx, dbUri)
+	// Инициализация репозитория, сервиса и эндпойнта
+	rep, err := repository.NewRepos(ctx, dbUri)
 	if err != nil {
 		log.Fatal("Can't init repository:", err)
 	}
-
-	// Создать проект
-	/*project := ds.Project{
-		ID:    primitive.NewObjectID(),
-		Title: "Мария",
-		Channels: ds.Channels{
-			Vk:   []ds.VkConfig{ds.VkConfig{Token: "213"}, ds.VkConfig{Token: "ьувтвтв111"}},
-			Tg:   []ds.TgConfig{ds.TgConfig{Token: "1234"}},
-		},
-	}
-	err = rep.AddProject(ctx, &project)
+	services := service.NewService(rep)
+	endpoints := endpoint.NewEndpoint(services)
+	// todo echo подключить и в эндпойнт
+	srv := new(mongo.Server)
+	err = srv.Run(endpoints.InitRoutes())
 	if err != nil {
-		log.Println("Add error", err)
-	}*/
+		log.Println("error occurred while running http server ", err)
+	}
 
 	// Найти проект
 
@@ -57,7 +53,8 @@ func main() {
 		}*/
 
 	// Изменение проекта
-	project := ds.Project{
+
+	/*project := ds.Project{
 		Title: "Машенька",
 		Channels: ds.Channels{
 			Vk: []ds.VkConfig{ds.VkConfig{Token: "213"}, ds.VkConfig{Token: "55555"}},
@@ -69,6 +66,6 @@ func main() {
 
 	if err != nil {
 		log.Println("change error", err)
-	}
+	}*/
 
 }

@@ -23,7 +23,7 @@ const (
 	projectsCollection = "Projects"
 )
 
-func New(ctx context.Context, dbUri string) (*Repository, error) {
+func NewRepos(ctx context.Context, dbUri string) (*Repository, error) {
 	client, err := mongo.NewClient(options.Client().ApplyURI(dbUri))
 	if err != nil {
 		log.Println("problem")
@@ -120,13 +120,14 @@ func (r *Repository) ChangeProject(ctx context.Context, ID string, project *ds.P
 }
 
 // Удаляет проект
-func (r *Repository) DeleteProject(ctx context.Context, ID string) error {
+// todo изменить или нет на ID string
+func (r *Repository) DeleteProject(ctx context.Context, ID primitive.ObjectID) error {
 	col := r.db.Database(database).Collection(projectsCollection)
-	oID, err := primitive.ObjectIDFromHex(ID)
+	/*oID, err := primitive.ObjectIDFromHex(ID)
 	if err != nil {
 		return err
-	}
-	_, err = col.DeleteOne(ctx, bson.D{{"_id", oID}})
+	}*/
+	_, err := col.DeleteOne(ctx, bson.D{{"_id", ID}})
 	if err != nil {
 		return err
 	}
