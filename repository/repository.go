@@ -78,20 +78,20 @@ func (r *Repository) FindProjectByTitle(ctx context.Context, project string) ([]
 }
 
 // Находит проект по id
-func (r *Repository) FindProjectByID(ctx context.Context, ID string) (*ds.Project, error) {
+func (r *Repository) FindProjectByID(ctx context.Context, ID primitive.ObjectID) (*ds.Project, error) {
 	col := r.db.Database(database).Collection(projectsCollection)
 
-	oID, err := primitive.ObjectIDFromHex(ID)
+	/*oID, err := primitive.ObjectIDFromHex(ID)
 	if err != nil {
 		return nil, err
-	}
+	}*/
 
-	got := col.FindOne(ctx, bson.D{{"_id", oID}})
+	got := col.FindOne(ctx, bson.D{{"_id", ID}})
 	if got.Err() != nil {
 		return nil, got.Err()
 	}
 	var doc *ds.Project
-	err = got.Decode(&doc)
+	err := got.Decode(&doc)
 	if err != nil {
 		return nil, err
 	}

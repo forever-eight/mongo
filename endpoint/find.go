@@ -16,9 +16,9 @@ func (e *Endpoint) find(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "problem with unmarshalling")
 	}
 
-	err = e.s.Delete(input.ID)
+	found, err := e.s.Find(input.ID)
 	if err != nil {
 		return c.String(http.StatusBadRequest, "problem with delete")
 	}
-	return c.JSON(http.StatusOK)
+	return c.JSON(http.StatusOK, found)
 }

@@ -27,3 +27,7 @@ func (s *Service) Delete(ID primitive.ObjectID) error {
 func (s *Service) Add(project *ds.Project) error {
 	return s.r.AddProject(s.ctx, project)
 }
+
+func (s *Service) Find(ID primitive.ObjectID) (*ds.Project, error) {
+	return s.r.FindProjectByID(s.ctx, ID)
+}
