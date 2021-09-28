@@ -18,7 +18,7 @@ func (e *Endpoint) add(c echo.Context) error {
 
 	err = e.s.Add(&input)
 	if err != nil {
-		return c.String(http.StatusBadRequest, "problem with add")
+		return c.String(http.StatusBadRequest, "problem with add "+err.Error())
 	}
 	return c.String(http.StatusOK, "add ok")
 }
