@@ -101,17 +101,14 @@ func (r *Repository) FindProjectByID(ctx context.Context, ID primitive.ObjectID)
 }
 
 // Изменяет проект
-func (r *Repository) ChangeProject(ctx context.Context, ID string, project *ds.Project) error {
+func (r *Repository) ChangeProject(ctx context.Context, ID primitive.ObjectID, project *ds.Project) error {
 	col := r.db.Database(database).Collection(projectsCollection)
-	oID, err := primitive.ObjectIDFromHex(ID)
-	if err != nil {
-		return err
-	}
-	rID := bson.M{"_id": oID}
+
+	rID := bson.M{"_id": ID}
 
 	upd := bson.D{{Key: "$set", Value: bson.M{"title": project.Title, "channels": project.Channels}}}
 	fmt.Println(upd)
-	_, err = col.UpdateOne(ctx, rID, upd)
+	_, err := col.UpdateOne(ctx, rID, upd)
 	if err != nil {
 		log.Fatal("Error on updating one Hero", err)
 	}
@@ -121,7 +118,6 @@ func (r *Repository) ChangeProject(ctx context.Context, ID string, project *ds.P
 }
 
 // Удаляет проект
-// todo изменить или нет на ID string
 func (r *Repository) DeleteProject(ctx context.Context, ID primitive.ObjectID) error {
 	col := r.db.Database(database).Collection(projectsCollection)
 	/*oID, err := primitive.ObjectIDFromHex(ID)

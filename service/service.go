@@ -41,3 +41,37 @@ func (s *Service) Find(ID string) (*ds.Project, error) {
 	}
 	return s.r.FindProjectByID(s.ctx, id)
 }
+
+func (s *Service) Change(input *ds.ProjectString) error {
+	id, err := primitive.ObjectIDFromHex(input.ID)
+	if err != nil {
+		return err
+	}
+
+	exist, err := s.r.FindProjectByID(s.ctx, id)
+	if err != nil {
+		return err
+	}
+	if input.Title != "" {
+		exist.Title = input.Title
+	}
+	// todo исправить живо, потому что не хочет webhook и apiurl вставляться
+	if input.Channels.Jivo != nil {
+		for i := 0; i < len(input.Channels.Jivo); i++ {
+			exist.Channels.Jivo = append(exist.Channels.Jivo, input.Channels.Jivo[i])
+			exist.Channels.Jivo[len(exist.Channels.Jivo)-1].WebhookPath = input.Channels.Jivo[i].WebhookPath
+			exist.Channels.Jivo[len(exist.Channels.Jivo)-1].ApiUrl = input.Channels.Jivo[i].ApiUrl
+		}
+	}
+	if input.Channels.Tg != nil {
+		for i := 0; i < len(input.Channels.Tg); i++ {
+			exist.Channels.Tg = append(exist.Channels.Tg, input.Channels.Tg[i])
+		}
+	}
+	if input.Channels.Vk != nil {
+		for i := 0; i < len(input.Channels.Vk); i++ {
+			exist.Channels.Vk = append(exist.Channels.Vk, input.Channels.Vk[i])
+		}
+	}
+	return s.r.ChangeProject(s.ctx, id, exist)
+}

@@ -16,9 +16,9 @@ func NewEndpoint(s *service.Service) *Endpoint {
 
 func (e *Endpoint) InitRoutes() *echo.Echo {
 	echoS := echo.New()
-	// todo сделать ручки для change
 	// g := echoS.Group("/change")
 	// g.GET("/", mainAdmin)
+	echoS.POST("/change", e.change)
 	echoS.POST("/delete", e.delete)
 	echoS.POST("/add", e.add)
 	echoS.GET("/find", e.find)
