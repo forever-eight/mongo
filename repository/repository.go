@@ -46,6 +46,7 @@ func NewRepos(ctx context.Context, dbUri string) (*Repository, error) {
 
 // Добавляет проект
 func (r *Repository) AddProject(ctx context.Context, project *ds.Project) error {
+
 	col := r.db.Database(database).Collection(projectsCollection)
 
 	bookDoc, err := bson.Marshal(project)

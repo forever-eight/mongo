@@ -25,6 +25,8 @@ func (s *Service) Delete(ID primitive.ObjectID) error {
 }
 
 func (s *Service) Add(project *ds.Project) error {
+	id := primitive.NewObjectID()
+	project.ID = id
 	return s.r.AddProject(s.ctx, project)
 }
 

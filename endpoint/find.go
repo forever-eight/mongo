@@ -18,7 +18,7 @@ func (e *Endpoint) find(c echo.Context) error {
 
 	found, err := e.s.Find(input.ID)
 	if err != nil {
-		return c.String(http.StatusBadRequest, "problem with delete")
+		return c.String(http.StatusBadRequest, "problem with find"+err.Error())
 	}
 	return c.JSON(http.StatusOK, found)
 }
