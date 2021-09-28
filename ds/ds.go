@@ -2,6 +2,9 @@ package ds
 
 import "go.mongodb.org/mongo-driver/bson/primitive"
 
+type JustID struct {
+	ID string `json:"_id"`
+}
 type Project struct {
 	ID       primitive.ObjectID `bson:"_id"`
 	Title    string             `bson:"title"`

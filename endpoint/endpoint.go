@@ -21,7 +21,7 @@ func (e *Endpoint) InitRoutes() *echo.Echo {
 	// g.GET("/", mainAdmin)
 	echoS.POST("/delete", e.delete)
 	echoS.POST("/add", e.add)
-	echoS.POST("/find", e.find)
+	echoS.GET("/find", e.find)
 	return echoS
 }
 

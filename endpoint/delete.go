@@ -11,8 +11,9 @@ import (
 )
 
 func (e *Endpoint) delete(c echo.Context) error {
-	var input ds.Project
+	var input ds.JustID
 	err := json.NewDecoder(c.Request().Body).Decode(&input)
+	fmt.Println(input)
 	if err != nil {
 		fmt.Println(input)
 		return c.String(http.StatusBadRequest, "problem with unmarshalling")

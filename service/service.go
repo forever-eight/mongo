@@ -20,8 +20,12 @@ func NewService(repos *repository.Repository) *Service {
 
 }
 
-func (s *Service) Delete(ID primitive.ObjectID) error {
-	return s.r.DeleteProject(s.ctx, ID)
+func (s *Service) Delete(ID string) error {
+	id, err := primitive.ObjectIDFromHex(ID)
+	if err != nil {
+		return err
+	}
+	return s.r.DeleteProject(s.ctx, id)
 }
 
 func (s *Service) Add(project *ds.Project) error {
@@ -30,6 +34,10 @@ func (s *Service) Add(project *ds.Project) error {
 	return s.r.AddProject(s.ctx, project)
 }
 
-func (s *Service) Find(ID primitive.ObjectID) (*ds.Project, error) {
-	return s.r.FindProjectByID(s.ctx, ID)
+func (s *Service) Find(ID string) (*ds.Project, error) {
+	id, err := primitive.ObjectIDFromHex(ID)
+	if err != nil {
+		return nil, err
+	}
+	return s.r.FindProjectByID(s.ctx, id)
 }
